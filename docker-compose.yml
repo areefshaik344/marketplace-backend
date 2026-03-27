@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: markethub
+      POSTGRES_USER: markethub
+      POSTGRES_PASSWORD: markethub
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+
+  app:
+    build: .
+    ports: ["8080:8080"]
+    depends_on: [db]
+    environment:
+      DB_USER: markethub
+      DB_PASS: markethub
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/markethub
+      JWT_SECRET: super-secret-key-change-in-production-must-be-256-bits
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000
+
+volumes:
+  pgdata:
